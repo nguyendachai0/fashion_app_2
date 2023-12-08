@@ -4,18 +4,16 @@ require_once '../app/models/Model.php';
 
 class CategoryModel extends Model
 {
-    protected $id;
+
     protected $db;
     private $name;
-    private $description;
 
     // Constructor
-    public function __construct($id, $name, $description, $db)
+    public function __construct($name, $db)
     {
-        parent::__construct($id); // Call the parent constructor with the ID
+
 
         $this->name = $name;
-        $this->description = $description;
         $this->db = $db;
         $this->connectToDatabase();
     }
@@ -113,21 +111,12 @@ class CategoryModel extends Model
         return $this->name;
     }
 
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
     // Setters (You can add more setters as needed)
     public function setName($name)
     {
         $this->name = $name;
     }
 
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    }
     public function getAllCategories()
     {
 

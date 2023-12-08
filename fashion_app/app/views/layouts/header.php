@@ -11,7 +11,7 @@
             </div>
             <div class="col-4">
                 <div class="logo text-center">
-                    <a href="index.html"><img src="<?= BASE_URL ?>assets/images/logo/logo.png" alt="logo"></a>
+                    <a href="/"><img src="<?= BASE_URL ?>assets/images/logo/logo.png" alt="logo"></a>
                 </div>
             </div>
             <div class="col-4">
@@ -63,8 +63,8 @@
                 </div>
             <?php endif; ?>
             <div class="btn-style cart-checkout-btn">
-                <a class="btn btn-outline-primary" href="cart.html">View cart</a>
-                <a class="btn btn-outline-primary" href="checkout.html">Checkout</a>
+                <a class="btn btn-outline-primary" href="/cart">View cart</a>
+                <a class="btn btn-outline-primary" href="/checkout">Checkout</a>
             </div>
         </div>
     </div>
@@ -77,42 +77,32 @@
             <div id="menu" class="slinky-mobile-menu text-left">
                 <ul>
                     <li>
-                        <a href="#">HOME</a>
-                        <ul>
+                        <a href="/">HOME</a>
+                        <!-- <ul>
                             <li><a href="index.html">Home version 1 </a></li>
                             <li><a href="index-2.html">Home version 2</a></li>
-                        </ul>
+                        </ul> -->
                     </li>
                     <li>
                         <a href="#">PAGES</a>
                         <ul>
-                            <li><a href="about-us.html">About Us</a></li>
-                            <li><a href="cart.html">Cart Page</a></li>
-                            <li><a href="checkout.html">Checkout</a></li>
-                            <li><a href="my-account.html">My Account</a></li>
-                            <li><a href="wishlist.html">Wishlist</a></li>
-                            <li><a href="coming-soon.html">Coming Soon</a></li>
-                            <li><a href="contact.html">Contact Us</a></li>
-                            <li><a href="login-register.html">Login Register</a></li>
+                            <li><a href="about-us">About Us</a></li>
+                            <li><a href="cart">Cart Page</a></li>
+                            <li><a href="contact">Contact Us</a></li>
+                            <?php if (!isset($_SESSION['user_id'])) : ?>
+                                <li><a href="login">Login</a></li>
+                                <li><a href="register">Register</a></li>
+                            <?php else : ?>
+                                <li><a href="logout">Logout</a></li>
+                            <?php endif; ?>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="shop">SHOP</a>
 
-                        </ul>
                     </li>
                     <li>
-                        <a href="#">SHOP</a>
-                        <ul>
-                            <li><a href="shop.html">Shop Page</a></li>
-                            <li><a href="shop-collection.html">Shop Collection</a></li>
-                            <li><a href="shop-fullwidth.html">Shop Fullwidth</a></li>
-                            <li><a href="shop-instagram.html">Shop Instagram</a></li>
-                            <li><a href="product-details.html">Product Details</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#">BLOG</a>
-                        <ul>
-                            <li><a href="blog.html">Blog</a></li>
-                            <li><a href="blog-details.html">Blog Details</a></li>
-                        </ul>
+                        <a href="blog">BLOG</a>
                     </li>
                 </ul>
             </div>

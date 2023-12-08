@@ -36,10 +36,6 @@ class ProductController
             require_once "../app/models/ProductModel.php";
             $db = new Model(); // Adjust this based on your database connection setup
             $productModel = new ProductModel('1', 'products', 'products', $db);
-
-            echo '<pre>';
-            var_dump($_POST);
-            echo '</pre>';
             // Get data from the form
             $title = $_POST['title'];
             $description = $_POST['description'];
@@ -208,7 +204,7 @@ class ProductController
 
         require_once "../app/models/ProductModel.php";
         $db = new Model(); // Adjust this based on your database connection setup
-        $productModel = new productModel('1', 'products', 'products', $db);
+        $productModel = new productModel('products', $db);
         $product = $productModel->getProductById($id);
 
         $layout = '../app/views/product/product-detail.php';

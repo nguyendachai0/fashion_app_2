@@ -23,6 +23,26 @@ class HomeController
         require('../app/views/index.php');
         // Now you can use $products in your view or perform further actions
     }
+    public function aboutUs()
+    {
+        $layout = "../app/views/layouts/about-us.php";
+        require("../app/views/index.php");
+    }
+    public function shop()
+    {
+        $layout = "../app/views/layouts/shop.php";
+        require("../app/views/index.php");
+    }
+    public function blog()
+    {
+        $layout = "../app/views/layouts/blog.php";
+        require("../app/views/index.php");
+    }
+    public function contact()
+    {
+        $layout = "../app/views/layouts/contact.php";
+        require("../app/views/index.php");
+    }
 
     public function getProductsByStatus($status)
     {

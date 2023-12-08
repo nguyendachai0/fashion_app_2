@@ -8,7 +8,7 @@
                 <h3 class="animated">BEST SALE THIS WEEK</h3>
                 <h1 class="animated">Spring <br> summer</h1>
                 <div class="btn-style">
-                    <a class="btn btn-outline-primary slider-btn animated" href="product-details.html">Shop
+                    <a class="btn btn-outline-primary slider-btn animated" href="shop">Shop
                         now</a>
                 </div>
             </div>
@@ -107,7 +107,7 @@
                         <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 mb-10">
                             <div class="product-wrap" data-aos="fade-up" data-aos-delay="200">
                                 <div class="product-img img-zoom mb-4">
-                                    <a href="product-details.html">
+                                    <a href="product/<?= $product['id'] ?>">
                                         <img class="default-img" src="uploads/product/<?= $product['image'] ?>" alt="">
                                     </a>
                                     <div class="product-action-wrap">

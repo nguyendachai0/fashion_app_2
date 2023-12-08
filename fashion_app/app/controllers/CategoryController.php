@@ -4,6 +4,8 @@ class CategoryController
 {
     public function index()
     {
+
+
         require "../app/models/CategoryModel.php";
 
         $db = new Model();

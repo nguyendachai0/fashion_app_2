@@ -1,12 +1,8 @@
 (function ($) {
     "use strict";
     
-    
-    
     /*------ SVG img active ----*/
     SVGInject($('.injectable'));
-    
-    
     /*--------------------------------
         Slider active 1
     -----------------------------------*/

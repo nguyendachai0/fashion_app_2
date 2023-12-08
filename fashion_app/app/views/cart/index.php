@@ -20,57 +20,71 @@
     <div class="container">
         <div class="row pb-120">
             <div class="col-12">
-                <form action="#">
-                    <div class="cart-table-content">
-                        <div class="table-content table-responsive">
-                            <table>
-                                <thead>
+
+                <div class="cart-table-content">
+                    <div class="table-content table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="width-thumbnail"></th>
+                                    <th class="width-price">Product</th>
+                                    <th class="width-price"> Price</th>
+                                    <th class="width-quantity">Quantity</th>
+                                    <th class="width-subtotal">Subtotal</th>
+                                    <th class="width-remove"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($cartDetails as $item) : ?>
                                     <tr>
-                                        <th class="width-thumbnail"></th>
-                                        <th class="width-name">Product</th>
-                                        <th class="width-price"> Price</th>
-                                        <th class="width-quantity">Quantity</th>
-                                        <th class="width-subtotal">Subtotal</th>
-                                        <th class="width-remove"></th>
+                                        <td class="product-thumbnail">
+                                            <a href="product-details.html"><img src="<?= BASE_URL ?>uploads/product/<?= $item['image'] ?>" alt=""></a>
+                                        </td>
+                                        <td class="product-name">
+                                            <h5><a href="product-details.html"><?= $item['product_name'] ?></a></h5>
+                                        </td>
+                                        <td class="product-price"><span class="amount"><?= $item['product_price'] ?> Đ</span></td>
+                                        <td class="cart-quality">
+                                            <div class="product-quality">
+                                                <input class="cart-plus-minus-box input-text qty text item-quantity" product_id="<?= $item['product_id'] ?>" name="item-quantity" value="<?= $item['quantity'] ?>">
+                                            </div>
+                                        </td>
+                                        <td class="product-total"><span><?= (int) $item['product_price'] * $item['quantity'] ?> Đ</span></td>
+
+                                        <td class="product-remove">
+
+                                            <form method="post" action="/cart/delete">
+                                                <input type="hidden" name="product_id" value="<?= $item['product_id'] ?>">
+                                                <button class="btn btn-light"><i class="las la-trash"></i></button>
+                                            </form>
+                                        </td>
+
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($cartDetails as $item) : ?>
-                                        <tr>
-                                            <td class="product-thumbnail">
-                                                <a href="product-details.html"><img src="<?= BASE_URL ?>uploads/product/<?= $item['image'] ?>" alt=""></a>
-                                            </td>
-                                            <td class="product-name">
-                                                <h5><a href="product-details.html"><?= $item['product_name'] ?></a></h5>
-                                            </td>
-                                            <td class="product-price"><span class="amount"><?= $item['product_price'] ?> Đ</span></td>
-                                            <td class="cart-quality">
-                                                <div class="product-quality">
-                                                    <input class="cart-plus-minus-box input-text qty text" name="qtybutton" value="<?= $item['quantity'] ?>">
-                                                </div>
-                                            </td>
-                                            <td class="product-total"><span><?= (int) $item['product_price'] * $item['quantity'] ?> Đ</span></td>
-                                            <td class="product-remove"><a href="#"><i class="las la-trash"></i></a></td>
-                                        </tr>
-                                    <?php endforeach ?>
-                                </tbody>
-                            </table>
-                        </div>
+                                <?php endforeach ?>
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="cart-shiping-update-wrapper">
-                                <div class="cart-shiping-update">
-                                    <a href="#">Continue Shopping</a>
-                                </div>
-                                <div class="cart-clear">
-                                    <button>Update Cart</button>
-                                    <a href="#">Clear Cart</a>
-                                </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="cart-shiping-update-wrapper">
+                            <div class="cart-shiping-update">
+                                <a href="/">Continue Shopping</a>
                             </div>
+
+                            <form id="updateCart" method="post" action="/cart/update">
+                                <div class="cart-clear">
+                                    <?php foreach ($cartDetails as $item) : ?>
+                                        <input type="hidden" name="product_id[]" value="<?= $item['product_id'] ?>">
+                                        <input type="hidden" name="new_quantity[]" id="quantitiesInput" />
+                                    <?php endforeach; ?>
+                                    <button type="submit">Update Cart</button>
+                                    <a href="cart/clear">Clear Cart</a>
+                                </div>
+                            </form>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
         <div class="row">
@@ -121,7 +135,7 @@
             <div class="col-lg-4 col-md-6 col-12">
                 <div class="grand-total-wrap">
                     <div class="grand-total-content">
-                        <h3>Subtotal <span>$180.00</span></h3>
+                        <h3>Subtotal <span><?= $totalPrice ?> Đ</span></h3>
                         <div class="grand-shipping">
                             <span>Shipping</span>
                             <ul>
@@ -150,3 +164,36 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Assuming your form has an ID, adjust accordingly
+        var form = document.getElementById("updateCart");
+
+        form.addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent the default form submission
+            // Gather quantity data
+            var quantities = [];
+            var quantityInputs = document.querySelectorAll('.item-quantity');
+            quantityInputs.forEach(function(input) {
+
+                var quantity = input.value;
+                quantities.push(quantity);
+            });
+
+            // Do something with the quantities (e.g., update form data)
+            // ...
+            var quantitiesInput = document.querySelectorAll("#quantitiesInput");
+            quantitiesInput.forEach(function(input) {
+                input.value = quantities.shift();
+
+            })
+
+            quantitiesInput.value = JSON.stringify(quantities);
+            console.log(quantitiesInput.value)
+            // throw new Error('Script terminated with a custom error message');
+            // Now you can submit the form programmatically
+            form.submit();
+        });
+        // 
+    });
+</script>

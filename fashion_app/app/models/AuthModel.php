@@ -6,9 +6,10 @@ class AuthModel extends Model
 
     protected $db;
 
-    public function __construct($db)
+    public function __construct($db = null)
     {
         $this->db = $db;
+
         $this->connectToDatabase();
     }
     public function getCurrentUserId()
@@ -19,6 +20,26 @@ class AuthModel extends Model
         } else {
             return null; // User is not logged in
         }
+    }
+    public function isLoggedIn()
+    {
+        // Check if the user is logged in by verifying the presence of user ID in the session
+        return isset($_SESSION['user_id']);
+    }
+    public function isAdmin($user_id)
+    {
+        // Assuming you have a 'role' column in your user database table
+        // Check if the user with the given ID has the role of 'admin'
+        $stmt = $this->db->prepare("SELECT role_as FROM users WHERE id = :user_id");
+
+
+        $stmt->bindParam(':user_id', $user_id);
+        $result = $stmt->execute();
+        $role_as = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->fetch();
+        $stmt->closeCursor();
+
+        return $role_as['role_as'] === 0;
     }
 
     public function login($email, $password)
@@ -32,6 +53,7 @@ class AuthModel extends Model
 
 
             $_SESSION['user_id'] = $user['id'];
+
             $_SESSION['email'] = $user['email'];
 
             return null; // No error, authentication successful

@@ -1,0 +1,201 @@
+
+
+
+main {
+    grid-area: main;
+    overflow-y: auto;
+    padding: 20px 20px;
+    background-color: #fff;
+    color: #1d2634;
+    /* color: rgba(255, 255, 255, 0.95); */
+}
+
+.main-title {
+    color: #263043;
+    display: flex;
+    justify-content: space-between;
+}
+
+.main-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 20px;
+    margin: 15px 0;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 8px 15px;
+    border-radius: 5px;
+}
+
+.card:first-child {
+    background-color: #2962ff;
+}
+
+.card:nth-child(2) {
+    background-color: #ff6d00;
+}
+
+.card:nth-child(3) {
+    background-color: #2e7d32;
+}
+
+.card:nth-child(4) {
+    background-color: #d50000;
+}
+
+.card-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card-inner>.card_icon {
+    font-size: 25px;
+}
+
+.charts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 60px;
+    height: 300;
+}
+
+@media screen and (max-width: 576px) {
+    .header-left {
+        display: none;
+    }
+}
+
+
+
+
+
+
+
+.list-chart h1 {
+    text-align: center;
+}
+
+.simple-bar-chart {
+    height: 10rem;
+    display: grid;
+    grid-auto-flow: column;
+    gap: 2%;
+    align-items: end;
+    padding-inline: 2%;
+    padding-block: 1.5rem;
+    position: relative;
+    isolation: isolate;
+}
+
+.simple-bar-chart::after {
+    content: "";
+    position: absolute;
+    inset: 1.5rem 0;
+    z-index: -1;
+    background-image: repeating-linear-gradient(to top, transparent 0 calc(calc(100% / 10) - 1px), currentcolor 0 calc(100% / 10));
+    box-shadow: 0 1px 0 #060606;
+    opacity: 0.25;
+}
+
+.simple-bar-chart>.item {
+    height: calc(1% * var(--val));
+    background-color: var(--clr, #060606);
+    position: relative;
+    animation: item-height 3s ease forwards;
+}
+
+@keyframes item-height {
+    from {
+        height: 0;
+    }
+}
+
+.simple-bar-chart>.item>* {
+    position: absolute;
+    text-align: center;
+}
+
+.simple-bar-chart>.item>.label {
+    inset: 100% 0 auto 0;
+    margin-top: 10px;
+}
+
+.simple-bar-chart>.item>.value {
+    inset: auto 0 100% 0;
+}
+
+@property --p {
+    syntax: '<number>';
+    inherits: true;
+    initial-value: 0;
+}
+
+.pie {
+    --p: 20;
+    --b: 22px;
+    --c: darkred;
+    --w: 150px;
+    width: var(--w);
+    aspect-ratio: 1;
+    position: relative;
+    display: inline-grid;
+    margin: 5px;
+    place-content: center;
+    font-size: 25px;
+    font-weight: bold;
+    font-family: sans-serif;
+}
+
+.container-chart {
+    margin-top: 50px;
+}
+
+.container-lists {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.pie:before,
+.pie:after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+}
+
+.pie:before {
+    inset: 0;
+    background: radial-gradient(farthest-side, var(--c) 98%, #0000) top/var(--b) var(--b) no-repeat, conic-gradient(var(--c) calc(var(--p)*1%), #0000 0);
+    -webkit-mask: radial-gradient(farthest-side, #0000 calc(99% - var(--b)), #000 calc(100% - var(--b)));
+    mask: radial-gradient(farthest-side, #0000 calc(99% - var(--b)), #000 calc(100% - var(--b)));
+}
+
+.pie:after {
+    inset: calc(50% - var(--b)/2);
+    background: var(--c);
+    transform: rotate(calc(var(--p)*3.6deg)) translateY(calc(50% - var(--w)/2));
+}
+
+.animate {
+    animation: p 1s .5s both;
+}
+
+.no-round:before {
+    background-size: 0 0, auto;
+}
+
+.no-round:after {
+    content: none;
+}
+
+@keyframes p {
+    from {
+        --p: 0
+    }
+}

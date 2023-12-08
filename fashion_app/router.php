@@ -7,13 +7,17 @@
 
 
 // router.php
+session_start();
 
 require_once '../config/config.php';
 require_once '../router/Router.php';
 require_once '../config/routes.php';
+require_once '../app/models/AuthModel.php';
+require_once '../app/models/Model.php';
+
+
 // Autoloading
 
-session_start();
 
 
 
@@ -24,8 +28,8 @@ spl_autoload_register(function ($className) {
 
     require_once 'app/controllers/' . $className . '.php';
 });
-
-
+$db = new Model();
+$auth = new AuthModel($db);
 // Instantiate the Router and handle the request
-$router = new Router($url, $routes);
+$router = new Router($url, $routes, $auth);
 $router->handle();

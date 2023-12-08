@@ -7,9 +7,7 @@
             <th scope="col">ID</th>
             <th scope="col">Name</th>
             <th scope="col">Email</th>
-
             <th scope="col">Role</th>
-            <th scope="col">Image</th>
             <th scope="col">Actions</th>
         </tr>
     </thead>
@@ -21,7 +19,7 @@
                 <td><?php echo $user['email']; ?></td>
 
                 <td><?php echo $user_roles[$user['role_as']]; ?></td>
-                <td><img class="rounded-circle img-fluid" src="../uploads/user/thumbnails/thumb_<?= $user['image']; ?>"></td>
+
                 <td>
                     <!-- Example: Edit and Delete buttons -->
                     <a href="user/edit/<?= $user['id']; ?>" class="btn btn-primary">Edit</a>

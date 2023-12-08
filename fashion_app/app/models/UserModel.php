@@ -4,7 +4,6 @@ require_once '../app/models/Model.php';
 
 class UserModel extends Model
 {
-    protected $id;
     protected $db;
     protected $userRole;
     private $name;
@@ -16,12 +15,10 @@ class UserModel extends Model
     ];
 
     // Constructor
-    public function __construct($id, $name, $description, $db)
+    public function __construct($name, $db)
     {
-        parent::__construct($id); // Call the parent constructor with the ID
 
         $this->name = $name;
-        $this->description = $description;
         $this->db = $db;
         $this->connectToDatabase();
     }

@@ -1,6 +1,7 @@
 <?php
 require_once '../app/models/AuthModel.php';
 require_once '../app/models/Model.php';
+require_once '../app/controllers/AuthController.php';
 
 
 class AuthController
@@ -42,7 +43,13 @@ class AuthController
         }
 
         // Display the login form
-        include('../app/views/auth/login.php');
+
+        require('../app/views/auth/login.php');
+    }
+    public function access_denied()
+    {
+        require('../app/views/access-denied.php');
+        die();
     }
     public function register()
     {
@@ -71,6 +78,7 @@ class AuthController
         header("Location: login");
         exit();
     }
+
 
 
 

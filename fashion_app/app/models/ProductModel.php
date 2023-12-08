@@ -10,12 +10,9 @@ class ProductModel extends Model
     private $description;
 
     // Constructor
-    public function __construct($id, $name, $description, $db)
+    public function __construct($name, $db)
     {
-        parent::__construct($id); // Call the parent constructor with the ID
-
         $this->name = $name;
-        $this->description = $description;
         $this->db = $db;
         $this->connectToDatabase();
     }

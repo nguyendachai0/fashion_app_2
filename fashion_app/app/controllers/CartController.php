@@ -1,73 +1,130 @@
 <?php
 require_once '../app/models/Model.php';
-// app/controllers/ProductController.php
+require_once '../app/models/AuthModel.php';
+require_once '../app/models/CartModel.php';
+require_once '../app/models/ProductModel.php';
+
 
 class CartController
 {
-    public function index()
+    private $db;
+    private $cartModel;
+    private $productModel;
+    private $authModel;
+    public function __construct()
     {
-        require "../app/models/CartModel.php";
-        require "../app/models/AuthModel.php";
-        require "../app/models/ProductModel.php";
+        $this->db = new Model();
+        $this->cartModel = new CartModel('cart_items', $this->db);
+        $this->productModel = new ProductModel('products', $this->db);
+        $this->authModel = new AuthModel($this->db);
+    }
+    public function delete()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $user_id = $this->authModel->getCurrentUserId();
 
-        $db = new Model();
-        $cartModel = new CartModel('1', 'cart_items', 'cart_items', $db);
-        $user = (new AuthModel($db));
-        $userId = $user->getCurrentUserId();
-        $cartItems = $cartModel->getCartByUserId($userId);
-        $cartDetails = [];
-        $productModel = new ProductModel('1', 'products', 'products', $db);
-        foreach ($cartItems as $cartItem) {
-            $productId = $cartItem['product_id'];
-            $product = $productModel->getProductById($productId);
+            if ($user_id) {
+                $product_id = $_POST['product_id'];
+                $this->cartModel->deleteCartItem($user_id, $product_id);
 
-            // Assuming getProductById returns an array with product details
-            if ($product) {
-                $cartDetails[] = [
-                    'product_id' => $productId,
-                    'image' => $product['image'],
-                    'product_name' => $product['title'],
-                    'product_price' => $product['price'],
-                    'quantity' => $cartItem['quantity'],
+                // Update session variables and redirect back to the cart page
+                $cartItems = $this->cartModel->getCartByUserId($user_id);
+                $cartDetails = $this->cartModel->getCartDetails($cartItems);
+                $totalPrice = $this->cartModel->getTotalPrice($cartDetails);
 
-                    // Add other product details as needed
-                ];
+                $_SESSION['cartDetails'] = $cartDetails;
+                $_SESSION['total_price'] = $totalPrice;
+                $_SESSION['totalItems'] = count($cartDetails);
+
+                header("Location: /cart");
+            } else {
+                // User is not logged in, handle accordingly
+                echo "User is not logged in.";
             }
         }
-        $totalPrice = $this->getTotalPrice($cartDetails);
+    }
+    public function deleteAll()
+    {
+
+        $user_id = $this->authModel->getCurrentUserId();
+        if (isset($user_id)) {
+            $this->cartModel->clearCart($user_id);
+        }
+        header('Location: /cart');
+    }
+    public function update()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+
+            $user_id = $this->authModel->getCurrentUserId();
+
+            if ($user_id) {
+
+                $product_id = $_POST['product_id'];
+                $new_quantity = $_POST['new_quantity'];
+                echo '<pre>';
+                var_dump($product_id);
+                var_dump($new_quantity);
+                echo '</pre>';
+                // Check if the new quantity is valid (greater than 0)
+                if ($new_quantity > 0) {
+
+
+                    $this->cartModel->updateCartItem($user_id, $product_id, $new_quantity);
+
+                    // Update session variables and redirect back to the cart page
+                    $cartItems = $this->cartModel->getCartByUserId($user_id);
+                    $cartDetails = $this->cartModel->getCartDetails($cartItems);
+                    $totalPrice = $this->cartModel->getTotalPrice($cartDetails);
+
+                    $_SESSION['cartDetails'] = $cartDetails;
+                    $_SESSION['total_price'] = $totalPrice;
+                    $_SESSION['totalItems'] = count($cartDetails);
+
+                    header("Location: /cart");
+                } else {
+                    // Invalid quantity, handle accordingly (e.g., show an error message)
+                    echo "Invalid quantity.";
+                }
+            } else {
+                // User is not logged in, handle accordingly
+                echo "User is not logged in.";
+            }
+        }
+    }
+
+
+    public function index()
+    {
+        $user_id = $this->authModel->getCurrentUserId();
+        $cartItems = $this->cartModel->getCartByUserId($user_id);
+        $cartDetails = $this->cartModel->getCartDetails($cartItems);
+        $totalPrice = $this->cartModel->getTotalPrice($cartDetails);
         $_SESSION['cartDetails'] = $cartDetails;
         $_SESSION['total_price'] = $totalPrice;
         $_SESSION['totalItems'] = count($cartDetails);
         $layout = 'cart/index.php';
         require('../app/views/index.php');
     }
-    public function getTotalPrice($cartDetails)
-    {
-        $totalPrice = 0;
 
-        foreach ($cartDetails as $cartItem) {
-            $totalPrice += $cartItem['product_price'] * $cartItem['quantity'];
-        }
-
-        return $totalPrice;
-    }
     public function add()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            require "../app/models/CartModel.php";
-            require "../app/models/AuthModel.php";
-
-            $db = new Model();
-            $cartModel = new CartModel('2', 'cart_items', 'cart_items', $db);
-            $authModel = new AuthModel($db);
-            $user_id = $authModel->getCurrentUserId();
+            $user_id = $this->authModel->getCurrentUserId();
+            $cartItems = $this->cartModel->getCartByUserId($user_id);
 
             if ($user_id) {
                 $product_id = $_POST['product_id'];
                 $quantity = $_POST['quantity'];
-                $cartModel->addToCart($user_id, $product_id, $quantity);
+                $this->cartModel->addToCart($user_id, $product_id, $quantity);
+                $cartItems = $this->cartModel->getCartByUserId($user_id);
+                $cartDetails = $this->cartModel->getCartDetails($cartItems);
+                $totalPrice = $this->cartModel->getTotalPrice($cartDetails);
 
-                // Rest of your code
+                $_SESSION['cartDetails'] = $cartDetails;
+                $_SESSION['total_price'] = $totalPrice;
+                $_SESSION['totalItems'] = count($cartDetails);
 
                 header("Location: /cart");
             } else {
@@ -78,28 +135,29 @@ class CartController
     }
     public function proceedOrder()
     {
-        require "../app/models/AuthModel.php";
-        require "../app/models/OrderModel.php";
-        require "../app/models/CartModel.php";
+        // require "../app/models/AuthModel.php";
+        require_once "../app/models/OrderModel.php";
+        require_once "../app/models/CartModel.php";
         $user = new AuthModel(new Model());
-        $userId = $user->getCurrentUserId();
-
+        $user_id = $user->getCurrentUserId();
         // Check if the user is logged in
-        if (!$userId) {
+        if (!$user_id) {
             // Redirect to login or handle the case where the user is not logged in
             header("Location: /login");
             exit;
         }
-
         // Assuming you have an OrderModel with methods to create orders and order items
-        $orderModel = new OrderModel('user_id', 'orders', 'order_items', 'order_details', new Model());
+        $orderModel = new OrderModel('orders', 'order_items', 'order_details', new Model);
         $totalPrice = $_POST['total_price'];
         $status = 'pending';
         // Create a new order
-        $orderId = $orderModel->createOrder($userId, $totalPrice, $status);
+        $orderId = $orderModel->createOrder($user_id, $totalPrice, $status);
 
+        $cartItems = $this->cartModel->getCartByUserId($user_id);
+        $cartDetails = $this->cartModel->getCartDetails($cartItems);
+        $totalPrice = $this->cartModel->getTotalPrice($cartDetails);
         // Iterate through cart items and add them to order_items table
-        foreach ($_SESSION['cartDetails'] as $cartItem) {
+        foreach ($cartDetails as $cartItem) {
             $productId = $cartItem['product_id'];
             $quantity = $cartItem['quantity'];
             $unit_price = $cartItem['product_price'];
@@ -121,11 +179,11 @@ class CartController
         $zipcode = $_POST['zipcode'];
         $countryCode = $_POST['countryCode'];
 
-        $orderModel->insertOrderDetails($firstName, $lastName, $phone, $address1, $address2, $city, $state, $zipcode, $countryCode);
+        $orderModel->insertOrderDetails($firstName, $lastName, $phone, $address1, $address2, $city, $state, $zipcode, $countryCode, $orderId);
 
         // Optionally, you can clear the cart after the order is placed
-        $cartModel = new CartModel('1', 'cart_items', 'cart_items', $db);
-        $cartModel->clearCart($userId);
+        $cartModel = new CartModel('cart_items', $db);
+        $cartModel->clearCart($user_id);
 
         // Redirect to a thank you page or order summary page
         header("Location: /");
