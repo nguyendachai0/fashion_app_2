@@ -37,6 +37,7 @@ Improved analytics with visualization tools.
 User reviews and ratings for products.
 ## Deployment
 https://dhstore.wuaze.com/
+Currently I encounter problems with "max_user_limits", Because I use free deployment so I can't have access to adjust it, so It not work for role admin, but page work correctly for user role page.
 
 
 
