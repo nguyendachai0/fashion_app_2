@@ -12,7 +12,7 @@ class AuthController
     {
         $db = new Model();
 
-        $this->authModel = new AuthModel($db);
+        $this->authModel = AuthModel::getInstance($db);
     }
     public function login()
     {

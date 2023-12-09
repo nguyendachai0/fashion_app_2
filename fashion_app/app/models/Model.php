@@ -8,13 +8,13 @@ class Model
     protected $db;
 
     // Constructor
-    public function __construct($id = null)
-    {
-        $this->id = $id;
+    // public function __construct($id = null)
+    // {
+    //     $this->id = $id;
+    //     var_dump('hw');
+    //     // Connect to the database
 
-        // Connect to the database
-
-    }
+    // }
 
     // Connect to the database
     protected function connectToDatabase()
@@ -40,6 +40,14 @@ class Model
     public function setId($id)
     {
         $this->id = $id;
+    }
+    private function closeDatabaseConnection()
+    {
+        $this->db = null;
+    }
+    public function __destruct()
+    {
+        $this->closeDatabaseConnection();
     }
 
     // You can include other common functionality shared by models here

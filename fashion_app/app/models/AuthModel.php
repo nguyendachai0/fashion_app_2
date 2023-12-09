@@ -5,13 +5,20 @@ class AuthModel extends Model
 {
 
     protected $db;
-
+    private static $auth;
     public function __construct($db = null)
     {
         $this->db = $db;
-
         $this->connectToDatabase();
     }
+    public static function getInstance($db)
+    {
+        if (!self::$auth) {
+            self::$auth = new self($db);
+        }
+        return self::$auth;
+    }
+
     public function getCurrentUserId()
     {
         // Check if the user is logged in

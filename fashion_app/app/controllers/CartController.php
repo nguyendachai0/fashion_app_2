@@ -9,19 +9,17 @@ class CartController
 {
     private $db;
     private $cartModel;
-    private $productModel;
-    private $authModel;
+    // private $productModel;
     public function __construct()
     {
         $this->db = new Model();
         $this->cartModel = new CartModel('cart_items', $this->db);
-        $this->productModel = new ProductModel('products', $this->db);
-        $this->authModel = new AuthModel($this->db);
+        // $this->productModel = new ProductModel('products', $this->db);
     }
     public function delete()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $user_id = $this->authModel->getCurrentUserId();
+            $user_id = $_SESSION['user_id'];
 
             if ($user_id) {
                 $product_id = $_POST['product_id'];
@@ -46,7 +44,7 @@ class CartController
     public function deleteAll()
     {
 
-        $user_id = $this->authModel->getCurrentUserId();
+        $user_id = $_SESSION['user_id'];
         if (isset($user_id)) {
             $this->cartModel->clearCart($user_id);
         }
@@ -57,16 +55,12 @@ class CartController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
-            $user_id = $this->authModel->getCurrentUserId();
-
+            $user_id = $_SESSION['user_id'];
             if ($user_id) {
 
                 $product_id = $_POST['product_id'];
                 $new_quantity = $_POST['new_quantity'];
-                echo '<pre>';
-                var_dump($product_id);
-                var_dump($new_quantity);
-                echo '</pre>';
+
                 // Check if the new quantity is valid (greater than 0)
                 if ($new_quantity > 0) {
 
@@ -97,24 +91,32 @@ class CartController
 
     public function index()
     {
-        $user_id = $this->authModel->getCurrentUserId();
-        $cartItems = $this->cartModel->getCartByUserId($user_id);
-        $cartDetails = $this->cartModel->getCartDetails($cartItems);
-        $totalPrice = $this->cartModel->getTotalPrice($cartDetails);
-        $_SESSION['cartDetails'] = $cartDetails;
-        $_SESSION['total_price'] = $totalPrice;
-        $_SESSION['totalItems'] = count($cartDetails);
-        $layout = 'cart/index.php';
-        require('../app/views/index.php');
+
+
+        $user_id = $_SESSION['user_id'];
+
+        if ($user_id !== null) {
+            $cartItems = $this->cartModel->getCartByUserId($user_id);
+            $cartDetails = $this->cartModel->getCartDetails($cartItems);
+            $totalPrice = $this->cartModel->getTotalPrice($cartDetails);
+            $_SESSION['cartDetails'] = $cartDetails;
+            $_SESSION['total_price'] = $totalPrice;
+            $_SESSION['totalItems'] = count($cartDetails);
+            $layout = 'cart/index.php';
+            require('../app/views/index.php');
+        } else {
+            header('Location: /login');
+        }
     }
 
     public function add()
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $user_id = $this->authModel->getCurrentUserId();
-            $cartItems = $this->cartModel->getCartByUserId($user_id);
 
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $user_id = $_SESSION['user_id'];
             if ($user_id) {
+                $cartItems = $this->cartModel->getCartByUserId($user_id);
+
                 $product_id = $_POST['product_id'];
                 $quantity = $_POST['quantity'];
                 $this->cartModel->addToCart($user_id, $product_id, $quantity);
@@ -129,7 +131,7 @@ class CartController
                 header("Location: /cart");
             } else {
                 // User is not logged in, handle accordingly
-                echo "User is not logged in.";
+                header("Location: /login");
             }
         }
     }
@@ -138,8 +140,8 @@ class CartController
         // require "../app/models/AuthModel.php";
         require_once "../app/models/OrderModel.php";
         require_once "../app/models/CartModel.php";
-        $user = new AuthModel(new Model());
-        $user_id = $user->getCurrentUserId();
+
+        $user_id = $_SESSION['user_id'];
         // Check if the user is logged in
         if (!$user_id) {
             // Redirect to login or handle the case where the user is not logged in
@@ -182,8 +184,7 @@ class CartController
         $orderModel->insertOrderDetails($firstName, $lastName, $phone, $address1, $address2, $city, $state, $zipcode, $countryCode, $orderId);
 
         // Optionally, you can clear the cart after the order is placed
-        $cartModel = new CartModel('cart_items', $db);
-        $cartModel->clearCart($user_id);
+        $this->cartModel->clearCart($user_id);
 
         // Redirect to a thank you page or order summary page
         header("Location: /");

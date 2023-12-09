@@ -8,10 +8,8 @@
                 <li>
                     <a href="index.html">HOME</a>
                 </li>
-                <li>
-                    >
-                </li>
-                <li>CART </li>
+
+                <li>CART</li>
             </ul>
         </div>
     </div>
@@ -135,7 +133,6 @@
             <div class="col-lg-4 col-md-6 col-12">
                 <div class="grand-total-wrap">
                     <div class="grand-total-content">
-                        <h3>Subtotal <span><?= $totalPrice ?> Đ</span></h3>
                         <div class="grand-shipping">
                             <span>Shipping</span>
                             <ul>
@@ -148,7 +145,7 @@
                             <p>Shipping to Bangladesh</p>
                         </div>
                         <div class="grand-total">
-                            <h4>Total <span>$185.00</span></h4>
+                            <h4>Total <span><?= $totalPrice ?> Đ</span></h4>
                         </div>
                     </div>
                     <div class="grand-total-btn">
