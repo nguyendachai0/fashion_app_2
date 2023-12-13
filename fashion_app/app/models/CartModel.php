@@ -52,7 +52,8 @@ class CartModel extends Model
     public function getCartByUserId($userId)
     {
         // Assuming your user ID column is named 'user_id'
-        $query = "SELECT * FROM cart_items WHERE $userId = :userId";
+
+        $query = "SELECT * FROM cart_items WHERE user_id = :userId";
         $params = [':userId' => $userId];
 
         try {
@@ -61,7 +62,6 @@ class CartModel extends Model
 
             // Fetch all cart items for the user
             $cartItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
             return $cartItems;
         } catch (PDOException $e) {
             // Handle the exception appropriately (log, display an error message, etc.)

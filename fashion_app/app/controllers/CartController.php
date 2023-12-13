@@ -94,7 +94,6 @@ class CartController
 
 
         $user_id = $_SESSION['user_id'];
-
         if ($user_id !== null) {
             $cartItems = $this->cartModel->getCartByUserId($user_id);
             $cartDetails = $this->cartModel->getCartDetails($cartItems);

@@ -59,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <button class="btn">Register</button>
                     </div>
                     <div class="a_top">
-                        <a href="login.html" class="text_link">Back!</a>
+                        <a href="login" class="text_link">Back!</a>
                     </div>
                 </div>
             </div>
