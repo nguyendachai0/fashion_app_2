@@ -1,0 +1,20 @@
+version: '3'
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+  mysql:
+    image: mysql:8.0
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+      - ./fashion_app.sql:/docker-entrypoint-initdb.d/fashion_app.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: root_
+      MYSQL_DATABASE: fashion_app
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 
