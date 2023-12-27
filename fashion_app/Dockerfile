@@ -1,16 +1,20 @@
+# Use an official PHP image as the base image
+FROM php:7.4-fpm
 
-FROM php:7.4-apache
+# Set the working directory in the container
+WORKDIR /var/www/html
 
+# Copy the application files to the container
+COPY . .
 
-WORKDIR /var/www/html/public
+# Install any additional dependencies your application needs (e.g., git)
+RUN apt-get update && apt-get install -y \
+    git \
+    # Add other dependencies here \
+    && rm -rf /var/lib/apt/lists/*
 
+# Expose the port that PHP-FPM will run on
+EXPOSE 9000
 
-COPY public/ /var/www/html/public
-
-RUN docker-php-ext-install mysqli pdo pdo_mysql
-
-RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
-
-EXPOSE 80
-
-CMD ["apache2-foreground"]
+# Start PHP-FPM
+CMD ["php-fpm"]

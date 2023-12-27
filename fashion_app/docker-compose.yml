@@ -1,20 +1,23 @@
 version: '3'
 services:
-  php:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "8080:80"
-    depends_on:
-      - mysql
-  mysql:
-    image: mysql:8.0
+  www:
+    image: php:apache
     volumes:
-      - ./mysql_data:/var/lib/mysql
-      - ./fashion_app.sql:/docker-entrypoint-initdb.d/fashion_app.sql
-    environment:
-      MYSQL_ROOT_PASSWORD: root_
-      MYSQL_DATABASE: fashion_app
-      MYSQL_USER: root
-      MYSQL_PASSWORD: 
+      - "./:/var/www/html"
+    ports:
+      - 80:80
+      - 443:443 
+  db:
+    image: mysql:latest
+    environtment:
+      - MYSQL_DATABASE=fashion_app
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=password
+      - MYSQL_ALLOW_EMPTY_PASSWORD=1
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 8081:80
+    environtment:
+      - PMA_HOST=db
+      - pma_port=3306
