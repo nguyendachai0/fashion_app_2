@@ -1,0 +1,62 @@
+version: '3'
+services:
+
+ 
+  app:
+    build:
+      context: .
+      dockerfile: config/dockerfile
+    image: php:8.1-fpm-alpine3.18
+    container_name: php_app
+    restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+    working_dir: /var/www/html
+    volumes:
+      - ./fashion_app/:/var/www/html
+      - ./config/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+    networks:
+      - labnet
+
+  #Nginx Service
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:80"
+    volumes:
+      - ./fashion_app/:/var/www/html
+      - ./config/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - labnet
+  db: 
+    image: mysql:latest
+    environment:
+      - MYSQL_DATABASE=fashion_app
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pass # this should live in a env var
+      - MYSQL_ALLOW_EMPTY_PASSWORD=1 # equivalent to True
+    volumes:
+      - "./db:/docker-entrypoint-initdb.d"
+      - "./db/fashion_app.sql:/docker-entrypoint-initdb.d/fashion_app.sql"
+    networks:
+      - labnet
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 8001:80
+    environment:
+      - PMA_HOST=db
+      - PMA_PORT=3306
+    networks:
+      - labnet
+#Docker Networks
+networks:
+  labnet: 
+    external: 
+      name: labnet
+ 

@@ -4,13 +4,16 @@
 /***
  * routes to get access to controller and function 
  */
+
 require_once '../app/models/AuthModel.php';
 require_once '../app/models/Model.php';
 require_once '../app/controllers/AuthController.php';
 $db  = new Model();
 $auth = new AuthModel($db);
 $curr_user =  $auth->getCurrentUserId();
-
+echo '<pre>';
+var_dump($curr_user);
+echo '</pre>';
 // die();
 // $authCon = new AuthController();
 // $authCon->checkAdminAccess();
